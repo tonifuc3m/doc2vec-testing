@@ -63,6 +63,7 @@ def main():
         mkdir_p(os.path.join(args.output_path, 'models'))
         print("created models directory")
         docs = [g.doc2vec.TaggedDocument(doc, [i]) for i, doc in enumerate(texts)]
+        print("Let's start training")
         model = g.Doc2Vec(docs, size=vector_size, window=window_size, min_count=min_count, sample=sampling_threshold,
                           workers=worker_count, hs=0, dm=dm, negative=negative_size, dbow_words=1, dm_concat=1,
                           pretrained_emb=pretrained_emb, iter=train_epoch)
