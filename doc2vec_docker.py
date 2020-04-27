@@ -33,6 +33,7 @@ def main():
     if args.mode == 'infer' and args.tokenized_path is None:
         exit('word_embeddings_path and tokenized_path arguments are required if mode is set to train')
     if args.mode == 'train':
+        print("Entering training mode")
         pretrained_emb = args.word_embeddings_path
         tokenized_path = args.tokenized_path
         texts = []
@@ -45,7 +46,7 @@ def main():
                 texts.append(doc_tokens)
                 #texts.append([line.split() for line in f.readlines()])
 
-
+        print(len(texts))
         #doc2vec parameters
         vector_size = 300
         window_size = 15
@@ -60,11 +61,12 @@ def main():
         #enable logging
         logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
         mkdir_p(os.path.join(args.output_path, 'models'))
-
+        print("created models directory")
         docs = [g.doc2vec.TaggedDocument(doc, [i]) for i, doc in enumerate(texts)]
         model = g.Doc2Vec(docs, size=vector_size, window=window_size, min_count=min_count, sample=sampling_threshold,
                           workers=worker_count, hs=0, dm=dm, negative=negative_size, dbow_words=1, dm_concat=1,
                           pretrained_emb=pretrained_emb, iter=train_epoch)
+        print("Trained doc2vec")
         model.save(saved_path)
     elif args.mode == 'retrieve':
         saved_path = os.path.join(args.output_path, 'models', args.name + '.bin')
